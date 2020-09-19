@@ -18,12 +18,25 @@ namespace API_BOLETIM.Repositories
         // Chamamos o objeto que poderá receber e executar os comandos do banco
         SqlCommand cmd = new SqlCommand();
 
-        public Aluno Alterar(Aluno a)
+        public Aluno Alterar(int id, Aluno a)
         {
-            throw new NotImplementedException();
+            cmd.Connection = conexao.Conectar();
+
+            cmd.CommandText =
+                "UPDATE Aluno SET " +
+                "Nome = @nome " +
+                "Ra = @ra " +
+                "Idade = @idade WHERE IdAluno = @id";
+            cmd.Parameters.AddWithValue("@nome", a.Nome);
+            cmd.Parameters.AddWithValue("@ra", a.RA);
+            cmd.Parameters.AddWithValue("@idade", a.Idade);
+
+            cmd.Parameters.AddWithValue("@id", id);
+            conexao.Desconectar();
+            return a;
         }
 
-        public Aluno Alterar(int id, Aluno a)
+        internal void Alterar(int id)
         {
             throw new NotImplementedException();
         }
@@ -69,19 +82,19 @@ namespace API_BOLETIM.Repositories
             // Será este comando o responsável por injetar os dados no banco efetivamente
             cmd.ExecuteNonQuery();
 
-            // DML -> ExecuteNonQuery
-
+            conexao.Desconectar();
             return a;
         }
 
         public void Deletar(int id)
         {
-            throw new NotImplementedException();
-        }
+            cmd.Connection = conexao.Conectar();
 
-        public Aluno Excluir(Aluno a)
-        {
-            throw new NotImplementedException();
+            cmd.CommandText = "DELETE FROM Aluno WHERE IdAluno = @id ";
+            cmd.Parameters.AddWithValue("@id", id);
+
+            cmd.ExecuteNonQuery();
+            conexao.Desconectar();
         }
 
         public List<Aluno> LerTodos()
